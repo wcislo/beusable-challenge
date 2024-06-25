@@ -70,11 +70,11 @@
       "roomUsageMap": {
         "Premium": {
           "count": 7,
-          "totalCost": "EUR 1153"
+          "totalCost": "EUR 1153.99"
         },
         "Economy": {
           "count": 1,
-          "totalCost": "EUR 45.99"
+          "totalCost": "EUR 45"
         }
       }
     }

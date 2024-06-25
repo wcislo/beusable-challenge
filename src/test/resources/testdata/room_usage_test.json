@@ -1,0 +1,82 @@
+[
+  {
+    "input": {
+      "freeRoomsMap": {
+        "Premium": 3,
+        "Economy": 3
+      }
+    },
+    "output": {
+      "roomUsageMap": {
+        "Premium": {
+          "count": 3,
+          "totalCost": "EUR 738"
+        },
+        "Economy": {
+          "count": 3,
+          "totalCost": "EUR 167.99"
+        }
+      }
+    }
+  },
+  {
+    "input": {
+      "freeRoomsMap": {
+        "Premium": 7,
+        "Economy": 5
+      }
+    },
+    "output": {
+      "roomUsageMap": {
+        "Premium": {
+          "count": 6,
+          "totalCost": "EUR 1054"
+        },
+        "Economy": {
+          "count": 4,
+          "totalCost": "EUR 189.99"
+        }
+      }
+    }
+  },
+  {
+    "input": {
+      "freeRoomsMap": {
+        "Premium": 2,
+        "Economy": 7
+      }
+    },
+    "output": {
+      "roomUsageMap": {
+        "Premium": {
+          "count": 2,
+          "totalCost": "EUR 583"
+        },
+        "Economy": {
+          "count": 4,
+          "totalCost": "EUR 189.99"
+        }
+      }
+    }
+  },
+  {
+    "input": {
+      "freeRoomsMap": {
+        "Premium": 7,
+        "Economy": 1
+      }
+    },
+    "output": {
+      "roomUsageMap": {
+        "Premium": {
+          "count": 7,
+          "totalCost": "EUR 1153"
+        },
+        "Economy": {
+          "count": 1,
+          "totalCost": "EUR 45.99"
+        }
+      }
+    }
+  }
+]

@@ -2,9 +2,9 @@ package be.usable.beusablechallenge.service.impl;
 
 import be.usable.beusablechallenge.dto.FreeRoomsDTO;
 import be.usable.beusablechallenge.dto.UsageDTO;
+import be.usable.beusablechallenge.enums.RoomType;
 import be.usable.beusablechallenge.service.RoomsUsageService;
 import be.usable.beusablechallenge.dto.RoomsUsageDTO;
-
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,6 +24,8 @@ public class RoomsUsageServiceImpl implements RoomsUsageService {
     @Override
     public RoomsUsageDTO calculateRoomsUsage(FreeRoomsDTO freeRoomsDTO) {
 
+        //TODO validation
+
         // Split guests into economy and premium based on booking amount. Sort descending.
         Map<Boolean, Deque<BigDecimal>> partitionedMapSortedDescending = TEST_DATA.stream()
                 .sorted(Comparator.reverseOrder())
@@ -34,14 +36,13 @@ public class RoomsUsageServiceImpl implements RoomsUsageService {
         Deque<BigDecimal> premiumGuests = partitionedMapSortedDescending.get(false);
 
         // Get available rooms count
-        Integer premiumRoomsCount = freeRoomsDTO.getFreeRoomsMap().get("Premium");
-        Integer economyRoomsCount = freeRoomsDTO.getFreeRoomsMap().get("Economy");
+        Integer premiumRoomsCount = freeRoomsDTO.getFreeRoomsMap().get(RoomType.PREMIUM.getName());
+        Integer economyRoomsCount = freeRoomsDTO.getFreeRoomsMap().get(RoomType.ECONOMY.getName());
 
         // Calculate premium rooms booked by premium guests and their total cost
         int premiumGuestsCount = premiumGuests.size();
         int premiumRoomsBookedByPremiumGuests = Math.min(premiumRoomsCount, premiumGuestsCount);
         BigDecimal totalCostPremium = calculateBookedRoomsCost(premiumRoomsBookedByPremiumGuests, premiumGuests);
-
 
 
         // Allocate remaining premium rooms to highest paying economy guests if applicable
@@ -59,7 +60,7 @@ public class RoomsUsageServiceImpl implements RoomsUsageService {
 
         // Calculate economy rooms booked by economy guests and their total cost
         economyGuestsCount = economyGuests.size();
-        int economyRoomsBookedByEconomyGuests = Math.min(economyRoomsCount,economyGuestsCount);
+        int economyRoomsBookedByEconomyGuests = Math.min(economyRoomsCount, economyGuestsCount);
         BigDecimal totalCostEconomy = calculateBookedRoomsCost(economyRoomsBookedByEconomyGuests, economyGuests);
 
         // Map to return DTO
@@ -69,7 +70,7 @@ public class RoomsUsageServiceImpl implements RoomsUsageService {
     /*
         Iterate over Deque sorted descending to get `roomsBooked` highest paying guests. Use `pop()` to remove already processed guests
      */
-    private BigDecimal calculateBookedRoomsCost(int roomsBooked, Deque<BigDecimal> guestsBooking){
+    private BigDecimal calculateBookedRoomsCost(int roomsBooked, Deque<BigDecimal> guestsBooking) {
         BigDecimal totalCost = BigDecimal.ZERO;
         for (int i = 0; i < roomsBooked; i++) {
             totalCost = totalCost.add(guestsBooking.pop());
@@ -77,11 +78,12 @@ public class RoomsUsageServiceImpl implements RoomsUsageService {
         return totalCost;
     }
 
-    private RoomsUsageDTO mapToRoomUsage(int bookedEconomyRoomsCount, BigDecimal totalEconomyRoomsCost, int bookedPremiumRoomsCount, BigDecimal totalPremiumRoomsCost){
+    private RoomsUsageDTO mapToRoomUsage(int bookedEconomyRoomsCount, BigDecimal totalEconomyRoomsCost, int bookedPremiumRoomsCount, BigDecimal totalPremiumRoomsCost) {
         Map<String, UsageDTO> usageDTOMap = new HashMap<>();
-        usageDTOMap.put("Economy", new UsageDTO(bookedEconomyRoomsCount, String.format("%s %s", CURRENCY, totalEconomyRoomsCost.stripTrailingZeros().toPlainString())));
-        usageDTOMap.put("Premium", new UsageDTO(bookedPremiumRoomsCount, String.format("%s %s", CURRENCY, totalPremiumRoomsCost.stripTrailingZeros().toPlainString())));
+        usageDTOMap.put(RoomType.ECONOMY.getName(), new UsageDTO(bookedEconomyRoomsCount, String.format("%s %s", CURRENCY, totalEconomyRoomsCost.stripTrailingZeros().toPlainString())));
+        usageDTOMap.put(RoomType.PREMIUM.getName(), new UsageDTO(bookedPremiumRoomsCount, String.format("%s %s", CURRENCY, totalPremiumRoomsCost.stripTrailingZeros().toPlainString())));
 
         return new RoomsUsageDTO(usageDTOMap);
     }
+
 }
